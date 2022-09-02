@@ -23,7 +23,7 @@ const App = () => {
 
   /* ---- Anecdote with the most votes ---- */
   const highestVote = Math.max(...votes);
-  const highestVoteIndex = votes.indexOf(highestVote);
+  const highestVoteIndex = votes.indexOf(highestVote); // first occurring index with a value of highestVote
 
   return (
     <>
