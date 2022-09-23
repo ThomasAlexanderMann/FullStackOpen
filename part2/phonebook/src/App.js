@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 import Persons from "./components/Persons";
 import AddNewNumberForm from "./components/AddNewNumberForm";
 import FilterPhoneBookByName from "./components/FilterPhoneBookByName";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: 1, name: "Arto Hellas", number: "040-123456" },
-    { id: 2, name: "Ada Lovelace", number: "39-44-5323523" },
-    { id: 3, name: "Dan Abramov", number: "12-43-234345" },
-    { id: 4, name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newPersonID, setNewPersonID] = useState(persons.length + 1);
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => {
+        setPersons(response.data);
+      })
+      .catch((error) => {
+        console.warn(error);
+      });
+  }, []);
 
   const personsFilteredByName = persons.filter((p) =>
     p.name.toLowerCase().includes(filterByName.toLowerCase())
