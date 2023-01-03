@@ -43,14 +43,25 @@ function App() {
   else if (CountriesToDisplay.length === 1) {
     searchResult = <CountryDetails country={CountriesToDisplay[0]} />;
   } else {
-    searchResult = CountriesToDisplay.map((c) => <p>{c.name.common}</p>);
+    searchResult = CountriesToDisplay.map((c) => (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+        }}
+      >
+        <p style={{ margin: "0" }}>{c.name.common}</p>
+
+        <button onClick={() => setSearchField(c.name.common)}>show</button>
+      </div>
+    ));
   }
 
   useEffect(() => {
     axios
       .get("https://restcountries.com/v3.1/all")
       .then((response) => {
-        console.log("setAllCountries");
         setAllCountries(response.data);
       })
       .catch((error) => {
@@ -67,8 +78,16 @@ function App() {
           setSearchField(e.target.value);
         }}
       />
-
-      {searchResult}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          padding: "1rem 0",
+        }}
+      >
+        {searchResult}
+      </div>
     </div>
   );
 }
