@@ -12,7 +12,6 @@ const weatherDefault = {
 
 export const CountryDetails = ({ country }) => {
   const [weather, setWeather] = useState(weatherDefault);
-  console.log("weather", weather);
 
   useEffect(() => {
     axios
@@ -70,16 +69,12 @@ export const CountryDetails = ({ country }) => {
 
 function App() {
   const [AllCountries, setAllCountries] = useState([]);
-  console.log("api_key", api_key);
-
-  console.log("first country in array: ", AllCountries[0]);
 
   const [searchField, setSearchField] = useState("");
 
   const CountriesToDisplay = AllCountries.filter((c) =>
     c.name.common.toLowerCase().includes(searchField.toLowerCase())
   );
-  console.log("CountriesToDisplay", CountriesToDisplay);
 
   let searchResult = "";
   if (CountriesToDisplay.length > 10)
