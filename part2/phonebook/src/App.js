@@ -8,16 +8,18 @@ import FilterPhoneBookByName from "./components/FilterPhoneBookByName";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPersonID, setNewPersonID] = useState(0);
+  console.log("newPersonID", newPersonID);
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
 
+  // Get initial persons
   useEffect(() => {
     phonebookService
       .getAll()
       .then((initialPersons) => {
         setPersons(initialPersons);
-        setNewPersonID(initialPersons.length);
+        setNewPersonID(Math.max(...initialPersons.map((p) => p.id)) + 1);
       })
       .catch((error) => {
         console.warn(error);
@@ -28,6 +30,7 @@ const App = () => {
     p.name.toLowerCase().includes(filterByName.toLowerCase())
   );
 
+  // add new person
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -53,6 +56,21 @@ const App = () => {
       });
   };
 
+  // delete person
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      phonebookService
+        .remove(id)
+        .then(() => {
+          // filter out deleted person
+          setPersons(persons.filter((p) => p.id !== id));
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -71,7 +89,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={personsFilteredByName} />
+      <Persons persons={personsFilteredByName} deletePerson={deletePerson} />
     </div>
   );
 };
