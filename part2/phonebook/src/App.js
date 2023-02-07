@@ -8,7 +8,6 @@ import FilterPhoneBookByName from "./components/FilterPhoneBookByName";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPersonID, setNewPersonID] = useState(0);
-  console.log("newPersonID", newPersonID);
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
