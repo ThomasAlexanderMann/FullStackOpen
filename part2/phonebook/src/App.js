@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { phonebookService } from "./services/phoneBook";
 
 import Persons from "./components/Persons";
 import AddNewNumberForm from "./components/AddNewNumberForm";
@@ -7,16 +7,17 @@ import FilterPhoneBookByName from "./components/FilterPhoneBookByName";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newPersonID, setNewPersonID] = useState(persons.length + 1);
+  const [newPersonID, setNewPersonID] = useState(0);
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => {
-        setPersons(response.data);
+    phonebookService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons);
+        setNewPersonID(initialPersons.length);
       })
       .catch((error) => {
         console.warn(error);
@@ -37,14 +38,19 @@ const App = () => {
     }
 
     // Add new person to phonebook
-    setPersons(
-      persons.concat({
-        id: newPersonID,
+    phonebookService
+      .create({
+        id: newPersonID + 1,
         name: newName,
         number: newPhoneNumber,
       })
-    );
-    setNewPersonID(newPersonID + 1);
+      .then((newPerson) => {
+        setPersons(persons.concat(newPerson));
+        setNewPersonID(newPerson.id);
+      })
+      .catch((error) => {
+        console.warn(error);
+      });
   };
 
   return (
