@@ -34,8 +34,27 @@ const App = () => {
     e.preventDefault();
 
     // check if the name already exists in the phonebook
-    if (persons.find((p) => p.name === newName)) {
-      alert(`${newName} is already added to the phonebook`);
+    const personAlreadyInPhonebook = persons.find((p) => p.name === newName);
+    if (personAlreadyInPhonebook) {
+      if (
+        window.confirm(
+          `${personAlreadyInPhonebook.name} is already added to the phonebook, replace the old number with the new one`
+        )
+      ) {
+        phonebookService
+          .update({
+            ...personAlreadyInPhonebook,
+            number: newPhoneNumber,
+          })
+          .then((response) => {
+            setPersons(
+              persons.map((p) => (p.id === response.id ? response : p))
+            );
+          })
+          .catch((error) => {
+            console.warn(error);
+          });
+      }
       return;
     }
 
