@@ -4,6 +4,7 @@ import { phonebookService } from "./services/phoneBook";
 import Persons from "./components/Persons";
 import AddNewNumberForm from "./components/AddNewNumberForm";
 import FilterPhoneBookByName from "./components/FilterPhoneBookByName";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Get initial persons
   useEffect(() => {
@@ -46,10 +48,17 @@ const App = () => {
             ...personAlreadyInPhonebook,
             number: newPhoneNumber,
           })
-          .then((response) => {
+          .then((updatedPerson) => {
             setPersons(
-              persons.map((p) => (p.id === response.id ? response : p))
+              persons.map((p) =>
+                p.id === updatedPerson.id ? updatedPerson : p
+              )
             );
+
+            setSuccessMessage(
+              `${updatedPerson.name}'s phone number updated successfully`
+            );
+            setTimeout(() => setSuccessMessage(null), 5000);
           })
           .catch((error) => {
             console.warn(error);
@@ -68,6 +77,8 @@ const App = () => {
       .then((newPerson) => {
         setPersons(persons.concat(newPerson));
         setNewPersonID(newPerson.id);
+        setSuccessMessage(`${newPerson.name} added to phonebook successfully`);
+        setTimeout(() => setSuccessMessage(null), 5000);
       })
       .catch((error) => {
         console.warn(error);
@@ -92,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification success message={successMessage} />
       <FilterPhoneBookByName
         filterByName={filterByName}
         setFilterByName={setFilterByName}
