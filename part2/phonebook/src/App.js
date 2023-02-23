@@ -13,6 +13,7 @@ const App = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Get initial persons
   useEffect(() => {
@@ -62,6 +63,14 @@ const App = () => {
           })
           .catch((error) => {
             console.warn(error);
+            // filter out person deleted on the server from local person list
+            setPersons(
+              persons.filter((p) => p.id !== personAlreadyInPhonebook.id)
+            );
+            setErrorMessage(
+              `Information of ${personAlreadyInPhonebook.name} has already been removed from the server`
+            );
+            setTimeout(() => setErrorMessage(null), 5000);
           });
       }
       return;
@@ -103,7 +112,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification success message={successMessage} />
+      <Notification message={successMessage} />
+      <Notification error={errorMessage} />
       <FilterPhoneBookByName
         filterByName={filterByName}
         setFilterByName={setFilterByName}
